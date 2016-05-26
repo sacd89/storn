@@ -7,24 +7,19 @@ module.exports = function(app,  mongoose, cors){
 
   //-------------------------------PELICULAS---------------------------------//
 
-  /*Metodo post para agregar peliculas a la base de datos, se crea una nueva
-   pelicula, adentro se ponen los campos que tiene el modelo y con req.body
-   obtenemos los datos ingresados en la vista.
-  */
+  /* Metodo para crear peliculas*/
   app.post("/createPeliculas", function(req, res, next){
     var pelicula = new Pelicula({
       nombre: req.body.nombre,
       descripcion: req.body.descripcion,
       year: req.body.year,
       genero: req.body.genero,
-      director: mongoose.Types.ObjectId(req.body.director)
+      director: mongoose.Types.ObjectId(req.body.director) //Casteamos el string para convertirlo a un ObjectId
     });
 
-   pelicula.actores.push.apply(pelicula.actores, req.body.actores);
+   pelicula.actores.push.apply(pelicula.actores, req.body.actores); //Añade actores a la pelicula
 
-    /*Verificamos si se guarda en la base de datos, si no se guardo nos envia
-      un console.log con error, si se guarda nos renderisa la informacion en un
-    json en consola.*/
+   //Guardamos la pelicula en la base de datos
     pelicula.save(function(err, obj){
       if(err){
         return res.send(err);
@@ -34,8 +29,7 @@ module.exports = function(app,  mongoose, cors){
     });
   });
 
-  /*Metodo get donde obtenemos todas las peliculas en la base de datos, sin
-    filtro con el comando Pelicula.find({})*/
+  /* Metodo para obtener peliculas de la base de datos sin filtros */
   app.get("/getPeliculas", function(req,res, next){
     Pelicula.find({})
     .exec(function(err, pelicula){
