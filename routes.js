@@ -1,7 +1,7 @@
 //Se extienden los modelos
-var Pelicula = require('./models/peliculas');
-var Actor = require('./models/actores');
 var Director = require('./models/directores');
+var Actor = require('./models/actores');
+var Pelicula = require('./models/peliculas');
 
 module.exports = function(app,  mongoose, cors){
 
@@ -14,20 +14,22 @@ module.exports = function(app,  mongoose, cors){
   app.post("/createPeliculas", function(req, res, next){
     var pelicula = new Pelicula({
       nombre: req.body.nombre,
-      anio: req.body.anio,
+      descripcion: req.body.descripcion,
+      year: req.body.year,
       genero: req.body.genero,
-      director: req.body.director,
-      actorPpal: req.body.actorPpa
+      director: mongoose.Types.ObjectId(req.body.director)
     });
+
+   pelicula.actores.push.apply(pelicula.actores, req.body.actores);
 
     /*Verificamos si se guarda en la base de datos, si no se guardo nos envia
       un console.log con error, si se guarda nos renderisa la informacion en un
     json en consola.*/
     pelicula.save(function(err, obj){
       if(err){
-        res.send(err);
+        return res.send(err);
       }else{
-        res.send({message:'Pelicula creada con exito'});
+         return res.status(200).send({message:'Pelicula creada con exito'});
       }
     });
   });
@@ -52,16 +54,16 @@ module.exports = function(app,  mongoose, cors){
         res.send(err);
       }else{
         pelicula.nombre = req.body.nombre;
-        pelicula.anio = req.body.anio;
+        pelicula.descripcion = req.body.descripcion;
+        pelicula.year = req.body.year;
         pelicula.genero = req.body.genero;
-        pelicula.director = req.body.director;
-        pelicula.actorPpal = req.body.actorPpa;
+        pelicula.director = mongoose.Types.ObjectId(req.body.director);
       }
 
       // Guardamos la pelicula
       pelicula.save(function(err) {
         if (err) res.send(err);
-        res.json({message:'Pelicula actualizada!'});
+        res.status(200).send({message:'Pelicula actualizada!'});
       });
     });
   });

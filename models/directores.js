@@ -3,9 +3,9 @@ var Schema = mongoose.Schema;
 
 //colecciones = tablas
 var directorSchema = new Schema({
-  nombre:String,
-  edad:Number,
-  nacionalidad:String
+  nombre:{type:String},
+  edad:{type:Number},
+  nacionalidad:{type:String}
 });
 
 var Director = mongoose.model("Director", directorSchema);// para poder utilizar el modelo en otros lados
